@@ -105,7 +105,7 @@ function generate_lm_pdf()
 							{
 								$UniqueString = $DBString;
 							}
-						$codeContents = "https://esim.fossee.in/lab-migration/certificates/verify/" . $UniqueString;
+						$codeContents = "https://esim.fossee.in/lab_migration/certificate/verify/" . $UniqueString;
 						$fileName = 'generated_qrcode.png';
 						$pngAbsoluteFilePath = $tempDir . $fileName;
 						$urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
@@ -125,7 +125,7 @@ function generate_lm_pdf()
 						//$pdf->SetX(29);
 						//$pdf->SetY(-50);
 						$pdf->Ln(2);
-						$ftr_line = $path . "/pdf/images/bottom_line.png"; 
+						$ftr_line = $path . "/pdf/images/bottom_line1.png"; 
 						$pdf->Image($ftr_line, $pdf->GetX()+50, $pdf->GetY()+102, 150, 0);
 						$pdf->SetFont('Times', 'I', 14);
 						$pdf->SetLeftMargin(40);
