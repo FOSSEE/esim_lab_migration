@@ -69,8 +69,8 @@ function generate_pdf()
 	$pdf->SetFont('Times', 'I', 15);
 	//$pdf->SetFont('Arial', 'BI', 25);
 	$pdf->SetTextColor(129, 80, 47);
-	$pdf->Cell(320, 12, $data3->name_title . ' ' . $data3->name, '0', '1', 'C');
-	$pdf->Ln(0);
+	$pdf->Cell(320, 10, $data3->name_title . ' ' . $data3->name, '0', '1', 'C');
+	//$pdf->Ln(0);
 	$pdf->SetFont('Times', 'I', 14);
 	if (strtolower($data3->branch) != "others") {
 		$pdf->SetFont('Times', 'I', 14);
@@ -87,18 +87,28 @@ function generate_pdf()
 		//$pdf->Ln(0);
 		$pdf->SetTextColor(129, 80, 47);
 		$pdf->SetFont('Times','I',14);
-		$pdf->Cell(320, 12, $data3->lab_title, '0', '1', 'C');
+		$pdf->Cell(320, 8, $data3->lab_title, '0', '1', 'C');
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->Ln(0);
 		//$txt= $pdf->WriteHTML("<span>under</span>");
 		$pdf->SetFont('Times', 'I', 14);
 		$pdf->Cell(320, 8, 'to a eSim-only Lab', '0', '1', 'C');
 		$pdf->Ln(0);
+		$pdf->Cell(320, 5, '', '0', '1', 'C');
+						$pdf->SetX(125);
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->write(0, 'The work done is available at ');
+						$pdf->SetFont('Times', 'U' , '14');
+						$pdf->SetTextColor(139, 69, 19);
+						$pdf->write(0, 'https://esim.fossee.in/', 'https://esim.fossee.in/');
+						$pdf->SetFont('', '');
+						$pdf->SetTextColor(0, 0, 0);
+						$pdf->write(0, '.', '.');
 	} //strtolower($data3->branch) != "others"
 	else {
 		$pdf->SetFont('Times', 'I', 14);
 		$pdf->SetTextColor(0, 0, 0);
-		$pdf->Cell(320, 12, 'from the Department of ' . $data3->department . ', ', '0', '1', 'C');
+		$pdf->Cell(320, 8, 'from the Department of ' . $data3->department . ', ', '0', '1', 'C');
 		$pdf->Ln(0);
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->Cell(240, 8, $data3->university . ' college', '0', '1', 'C');
@@ -106,11 +116,21 @@ function generate_pdf()
 		$pdf->Cell(240, 8, 'has successfully migrated the', '0', '1', 'C');
 		$pdf->Ln(0);
 		$pdf->SetTextColor(139, 69, 16);
-		$pdf->Cell(320, 12, $data3->lab_title, '0', '1', 'C');
+		$pdf->Cell(320, 8, $data3->lab_title, '0', '1', 'C');
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->Ln(0);
 		$pdf->SetFont('Times', '', 14);
 		$pdf->Cell(320, 8, 'to a eSim-only Lab', '0', '1', 'C');
+		$pdf->Cell(320, 5, '', '0', '1', 'C');
+		$pdf->SetX(125);
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->write(0, 'The work done is available at ');
+		$pdf->SetFont('Times', 'U' , '14');
+		$pdf->SetTextColor(139, 69, 19);
+		$pdf->write(0, 'https://esim.fossee.in/', 'https://esim.fossee.in/');
+		$pdf->SetFont('', '');
+		$pdf->SetTextColor(0, 0, 0);
+		$pdf->write(0, '.', '.');
 		//$pdf->Cell(240, 8, 'He/she has coded ' . $number_of_example . ' solved examples using DWSIM from the', '0', '1', 'C');
 		//$pdf->Ln(0);
 		//$pdf->Cell(240, 8, 'Book: ' . $data2->book . ', Author: ' . $data2->author . '.', '0', '1', 'C');
@@ -155,7 +175,7 @@ function generate_pdf()
 	$pdf->Ln(10);
 	$sign1 = $path . "/pdf/images/sign1.png";
 	//$sign2 = $path . "/pdf/images/sign2.png";
-	$pdf->Image($sign1, $pdf->GetX()+110, $pdf->GetY() + 40, 85, 0);
+	$pdf->Image($sign1, $pdf->GetX()+118, $pdf->GetY() + 40, 85, 0);
 	//$pdf->Image($sign2, $pdf->GetX()+160, $pdf->GetY() + 45, 85, 0);
 	$pdf->Image($pngAbsoluteFilePath, $pdf->GetX()+15, $pdf->GetY()+70, 30, 0);
 	$fossee = $path . "/pdf/images/fossee.png";
