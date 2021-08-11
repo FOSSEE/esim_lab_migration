@@ -85,8 +85,6 @@ function verify_qrcode_lm_fromdb($qr_code)
 						$page_content .= "<td>" . $data2->name_title . " " . $data2->name . "</td></tr>";
 						$page_content .= "<tr><td>Department</td>";
 						$page_content .= "<td>" . $data2->department . "</td></tr>";
-						$page_content .= "<tr><td>Semester Details</td>";
-						$page_content .= "<td>" . $data2->semester_details . "</td></tr>";
 						$page_content .= "<tr><td>Institute Name</td>";
 						$page_content .= "<td>" . $data2->institute_name . "</td></tr>";
 						$page_content .= "<tr><td>Institute Address</td>";
