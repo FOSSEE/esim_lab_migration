@@ -8,11 +8,11 @@
         $result = $query->execute();
         //$result = db_query($query);
         $proposal_rows = array();
-        $i=1;
+        $i=$result->rowCount();
             while($row = $result->fetchObject()) {
                 $approval_date=date("Y", $row->approval_date);
                 $preference_rows[] = array($i, $row->university , l($row->lab_title,"lab_migration_run/".$row->id),$approval_date);
-                $i++;
+                $i--;
             }
         $preference_header = array('No','Institute', 'Lab', 'Year');
         $output = theme('table', array('header' => $preference_header, 'rows' => $preference_rows));
