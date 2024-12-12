@@ -5,6 +5,7 @@
         $query = db_select('lab_migration_proposal');
         $query->fields('lab_migration_proposal');
         $query->condition('approval_status', 3);
+        $query->orderBy('approval_date', 'DESC');
         $result = $query->execute();
         //$result = db_query($query);
         $proposal_rows = array();
