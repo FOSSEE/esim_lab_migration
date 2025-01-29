@@ -7,12 +7,12 @@
 function lab_migration_install() {
   // Create tables.
   drupal_install_schema('lab_migration');
-  variable_set('lab_migration_emails', '');
-  variable_set('lab_migration_from_email', '');
-  variable_set('lab_migration_source_extensions', '');
-  variable_set('lab_migration_dependency_extensions', '');
-  variable_set('lab_migration_result_extensions', '');
-  variable_set('lab_migration_xcos_extensions', '');
+  \Drupal::configFactory()->getEditable('lab_migration.settings')->set('lab_migration_emails', '')->save();
+  \Drupal::configFactory()->getEditable('lab_migration.settings')->set('lab_migration_from_email', '')->save();
+  \Drupal::configFactory()->getEditable('lab_migration.settings')->set('lab_migration_source_extensions', '')->save();
+  \Drupal::configFactory()->getEditable('lab_migration.settings')->set('lab_migration_dependency_extensions', '')->save();
+  \Drupal::configFactory()->getEditable('lab_migration.settings')->set('lab_migration_result_extensions', '')->save();
+  \Drupal::configFactory()->getEditable('lab_migration.settings')->set('lab_migration_xcos_extensions', '')->save();
 
   // create uploads folder
   $upload_path = $_SERVER['DOCUMENT_ROOT'] . base_path() . 'lab_migration_uploads';
@@ -31,12 +31,12 @@ function lab_migration_uninstall() {
   // Remove tables.
   drupal_uninstall_schema('lab_migration');
   // Remove variables
-  variable_del('lab_migration_emails');
-  variable_del('lab_migration_from_email');
-  variable_del('lab_migration_source_extensions');
-  variable_del('lab_migration_dependency_extensions');
-  variable_del('lab_migration_result_extensions');
-  variable_del('lab_migration_xcos_extensions');
+  \Drupal::config('lab_migration.settings')->clear('lab_migration_emails')->save();
+  \Drupal::config('lab_migration.settings')->clear('lab_migration_from_email')->save();
+  \Drupal::config('lab_migration.settings')->clear('lab_migration_source_extensions')->save();
+  \Drupal::config('lab_migration.settings')->clear('lab_migration_dependency_extensions')->save();
+  \Drupal::config('lab_migration.settings')->clear('lab_migration_result_extensions')->save();
+  \Drupal::config('lab_migration.settings')->clear('lab_migration_xcos_extensions')->save();
 }
 
 /**

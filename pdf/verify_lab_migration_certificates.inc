@@ -9,8 +9,8 @@ function verify_lab_migration_certificates($qr_code = 0)
 			} //$qr_code
 		else
 			{
-				$verify_certificates_form = drupal_get_form("verify_lab_migration_certificates_form");
-				$page_content = drupal_render($verify_certificates_form);
+				$verify_certificates_form = \Drupal::formBuilder()->getForm("verify_lab_migration_certificates_form");
+				$page_content = \Drupal::service("renderer")->render($verify_certificates_form);
 			}
 		return $page_content;
 	}
@@ -52,7 +52,7 @@ function verify_lab_migration_certificates_form_submit($form, &$form_state)
 		$qr_code = $v["QR_code"];
 		$page_content = verify_qrcode_lm_fromdb($qr_code);
 		$form['displaytable']['#markup'] = $page_content;
-		$commands[] = ajax_command_html("#displaytable", drupal_render($form['displaytable']));
+		$commands[] = ajax_command_html("#displaytable", \Drupal::service("renderer")->render($form['displaytable']));
 		return array(
 				'#type' => 'ajax',
 				'#commands' => $commands
@@ -60,7 +60,7 @@ function verify_lab_migration_certificates_form_submit($form, &$form_state)
 	}
 function verify_qrcode_lm_fromdb($qr_code)
 	{
-		$query = db_select('lab_migration_certificate_qr_code');
+		$query = \Drupal::database()->select('lab_migration_certificate_qr_code');
 		$query->fields('lab_migration_certificate_qr_code');
 		$query->condition('qr_code', $qr_code);
 		$result = $query->execute()->fetchObject();
@@ -68,7 +68,7 @@ function verify_qrcode_lm_fromdb($qr_code)
 		$certificate_id = $result->certificate_id;
 		if ($proposal_id)
 			{
-				$query2 = db_query("SELECT * FROM {lab_migration_certificate} WHERE proposal_id= :prop_id AND id=:certificate_id", array(
+				$query2 = \Drupal::database()->query("SELECT * FROM {lab_migration_certificate} WHERE proposal_id= :prop_id AND id=:certificate_id", array(
 						':prop_id' => $proposal_id,
 						':certificate_id' => $certificate_id
 				));

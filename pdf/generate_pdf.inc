@@ -5,13 +5,13 @@ function generate_lm_pdf()
 		//var_dump($mpath);die;
 		require($mpath . '/pdf/fpdf/fpdf.php');
 		require($mpath . '/pdf/phpqrcode/qrlib.php');
-		global $user;
+		$user = \Drupal::currentUser();
 		$x = $user->uid;
 		$proposal_id = arg(3); // proposal id of lab
 		$lab_certi_id = arg(4);
 		if ($proposal_id != NULL && $lab_certi_id != NULL)
 			{
-				$query3 = db_query("SELECT * FROM lab_migration_certificate WHERE proposal_id= :prop_id AND id=:certi_id", array(
+				$query3 = \Drupal::database()->query("SELECT * FROM lab_migration_certificate WHERE proposal_id= :prop_id AND id=:certi_id", array(
 						':prop_id' => $proposal_id,
 						":certi_id" => $lab_certi_id
 				));
@@ -69,7 +69,7 @@ function generate_lm_pdf()
 						$UniqueString = "";
 						$tempDir = $path . "/pdf/temp_prcode/";
 						//$UniqueString=generateRandomString();
-						$query = db_select('lab_migration_certificate_qr_code');
+						$query = \Drupal::database()->select('lab_migration_certificate_qr_code');
 						$query->fields('lab_migration_certificate_qr_code', array(
 								'qr_code',
 								'certificate_id'
@@ -97,9 +97,7 @@ function generate_lm_pdf()
 										":gen_date" => time()
 								);
 								/* storing the row id in $result */
-								$result = db_query($query, $args, array(
-										'return' => Database::RETURN_INSERT_ID
-								));
+								$result = \Drupal::database()->query($query, $args, $query);
 							} //$DBString == "" || $DBString == "null"
 						else
 							{
@@ -166,7 +164,7 @@ function generate_lm_pdf()
 				}
 		else
 			{
-				drupal_set_message('Your lab Is Still Under Review.', 'status');
+				\Drupal::messenger()->addStatus('Your lab Is Still Under Review.');
 			}
 	}
 function generateRandomString($length = 5)
