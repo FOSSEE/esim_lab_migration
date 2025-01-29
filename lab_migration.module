@@ -1,8 +1,8 @@
 <?php
 // $Id$
 
-require_once('general_deletion.inc');
-require_once('email.inc');
+// require_once('general_deletion.inc');
+// require_once('email.inc');
 
 /**
  * Implementation of hook_menu().
@@ -18,7 +18,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_proposal_form'),
     'access arguments' => array('lab migration create proposal'),
-    'type' => MENU_NORMAL_ITEM,
+    //'type' => MENU_NORMAL_ITEM,
     'file' => 'proposal.inc',
   );
  $items['lab_migration/manage_proposal'] = array(
@@ -36,7 +36,7 @@ function lab_migration_menu()
     'page callback' => 'lab_migration_proposal_pending',
     'access callback' => 'user_access',
     'access arguments' => array('lab migration manage proposal'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
+    //'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 1,
     'file' => 'manage_proposal.inc',
   );
@@ -46,7 +46,7 @@ function lab_migration_menu()
     'page callback' => 'lab_migration_solution_proposal_pending',
     'access callback' => 'user_access',
     'access arguments' => array('lab migration manage proposal'),
-    'type' => MENU_LOCAL_TASK,
+    //'type' => MENU_LOCAL_TASK,
     'weight' => 2,
     'file' => 'manage_solution_proposal.inc',
   );
@@ -56,7 +56,7 @@ function lab_migration_menu()
     'page callback' => 'lab_migration_proposal_pending_solution',
     'access callback' => 'user_access',
     'access arguments' => array('lab migration manage proposal'),
-    'type' => MENU_LOCAL_TASK,
+    //'type' => MENU_LOCAL_TASK,
     'weight' => 3,
     'file' => 'manage_proposal.inc',
   );
@@ -66,7 +66,7 @@ function lab_migration_menu()
     'page callback' => 'lab_migration_proposal_all',
     'access callback' => 'user_access',
     'access arguments' => array('lab migration manage proposal'),
-    'type' => MENU_LOCAL_TASK,
+    //'type' => MENU_LOCAL_TASK,
     'weight' => 4,
     'file' => 'manage_proposal.inc',
   );
@@ -76,7 +76,7 @@ function lab_migration_menu()
     'page callback' => 'lab_migration_category_all',
     'access callback' => 'user_access',
     'access arguments' => array('lab migration manage proposal'),
-    'type' => MENU_LOCAL_TASK,
+    //'type' => MENU_LOCAL_TASK,
     'weight' => 5,
     'file' => 'manage_proposal.inc',
   );
@@ -86,7 +86,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_category_edit_form'),
     'access arguments' => array('lab migration edit proposal'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'manage_proposal.inc',
   );
   $items['lab_migration/manage_proposal/approve'] = array(
@@ -95,7 +95,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_proposal_approval_form'),
     'access arguments' => array('lab migration manage proposal'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'manage_proposal.inc',
   );
   $items['lab_migration/manage_proposal/solution_proposal_approve'] = array(
@@ -104,7 +104,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_solution_proposal_approval_form'),
     'access arguments' => array('lab migration manage proposal'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'manage_solution_proposal.inc',
   );
   $items['lab_migration/manage_proposal/edit'] = array(
@@ -113,7 +113,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_proposal_edit_form'),
     'access arguments' => array('lab migration manage proposal'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'manage_proposal.inc',
   );
   $items['lab_migration/manage_proposal/status'] = array(
@@ -122,7 +122,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_proposal_status_form'),
     'access arguments' => array('lab migration approve proposal'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'manage_proposal.inc',
   );
 
@@ -132,7 +132,7 @@ function lab_migration_menu()
     'description' => 'Lab Migration Proposal Open For Solution',
     'page callback' => 'lab_migration_proposal_open',
     'access arguments' => array('lab migration propose solution'),
-    'type' => MENU_NORMAL_ITEM,
+    //'type' => MENU_NORMAL_ITEM,
     'file' => 'solution_proposal.inc',
   );
   $items['lab_migration/show_proposal'] = array(
@@ -140,7 +140,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_solution_proposal_form'),
     'access arguments' => array('lab migration propose solution'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'solution_proposal.inc',
   );
 
@@ -150,7 +150,7 @@ function lab_migration_menu()
     'description' => 'Manage Code Approval',
     'page callback' => 'lab_migration_code_approval',
     'access arguments' => array('lab migration approve code'),
-    'type' => MENU_NORMAL_ITEM,
+    //'type' => MENU_NORMAL_ITEM,
     'file' => 'code_approval.inc',
   );
   $items['lab_migration/code_approval/approve'] = array(
@@ -159,7 +159,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_code_approval_form'),
     'access arguments' => array('lab migration approve code'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
+    //'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 1,
     'file' => 'code_approval.inc',
   );
@@ -169,7 +169,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_bulk_approval_form'),
     'access arguments' => array('lab migration bulk manage code'),
-    'type' => MENU_LOCAL_TASK,
+    //'type' => MENU_LOCAL_TASK,
     'weight' => 2,
     'file' => 'bulk_approval.inc',
   );
@@ -179,7 +179,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_bulk_approval_form'),
     'access arguments' => array('lab migration bulk manage code'),
-    'type' => MENU_LOCAL_TASK,
+    //'type' => MENU_LOCAL_TASK,
     'weight' => 2,
     'file' => 'bulk_approval.inc',
   );
@@ -190,7 +190,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_dependency_approval_form'),
     'access arguments' => array('lab migration bulk manage code'),
-    'type' => MENU_LOCAL_TASK,
+    //'type' => MENU_LOCAL_TASK,
     'weight' => 3,
     'file' => 'dependency_approval.inc',
   );*/
@@ -200,7 +200,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_bulk_upload_code_form'),
     'access arguments' => array('lab migration bulk manage code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'weight' => 4,
     'file' => 'bulk_upload_code.inc',
   );
@@ -210,7 +210,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_lab_notes_form'),
     'access arguments' => array('lab migration bulk manage code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'weight' => 4,
     'file' => 'notes.inc',
   );
@@ -230,7 +230,7 @@ function lab_migration_menu()
     'description' => 'List Experiments', 
     'page callback' => 'lab_migration_list_experiments',
     'access arguments' => array('lab migration upload code'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
+    //'type' => MENU_DEFAULT_LOCAL_TASK,
     'file' => 'upload_code.inc',
     'weight' => 1,
   );
@@ -240,7 +240,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_upload_code_form'),
     'access arguments' => array('lab migration upload code'),
-    'type' => MENU_LOCAL_TASK,
+    //'type' => MENU_LOCAL_TASK,
     'file' => 'upload_code.inc',
     'weight' => 2,
   );
@@ -250,7 +250,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_upload_dependency_form'),
     'access arguments' => array('lab migration upload code'),
-    'type' => MENU_LOCAL_TASK,
+    //'type' => MENU_LOCAL_TASK,
     'file' => 'dependency.inc',
     'weight' => 3,
   );*/
@@ -260,7 +260,7 @@ function lab_migration_menu()
     'description' => 'Delete Solution', 
     'page callback' => 'lab_migration_upload_code_delete',
     'access arguments' => array('lab migration upload code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'upload_code_delete.inc',
   );
 
@@ -270,7 +270,7 @@ function lab_migration_menu()
     'description' => 'Code Download', 
     'page callback' => 'lab_migration_download_solution_file',
     'access arguments' => array('lab migration download code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'download.inc',
   );
 
@@ -279,7 +279,7 @@ function lab_migration_menu()
     'description' => 'PDF Download', 
     'page callback' => 'lab_migration_download_pdf_file',
     'access arguments' => array('lab migration download code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'download.inc',
   );
   /*$items['lab_migration/download/dependency'] = array(
@@ -287,7 +287,7 @@ function lab_migration_menu()
     'description' => 'Code Download', 
     'page callback' => 'lab_migration_download_dependency_file',
     'access arguments' => array('lab migration download code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'download.inc',
   );*/
 
@@ -296,7 +296,7 @@ function lab_migration_menu()
     'description' => 'Sample Code Download', 
     'page callback' => 'lab_migration_download_sample_code',
     'access arguments' => array('lab migration download code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'download.inc',
   );
 
@@ -305,7 +305,7 @@ function lab_migration_menu()
     'description' => 'Code Download', 
     'page callback' => 'lab_migration_download_solution',
     'access arguments' => array('lab migration download code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'download.inc',
   );
   $items['lab_migration/download/experiment'] = array(
@@ -313,7 +313,7 @@ function lab_migration_menu()
     'description' => 'Code Download', 
     'page callback' => 'lab_migration_download_experiment',
     'access arguments' => array('lab migration download code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'download.inc',
   );
   $items['lab_migration/download/lab'] = array(
@@ -321,7 +321,7 @@ function lab_migration_menu()
     'description' => 'Code Download', 
     'page callback' => 'lab_migration_download_lab',
     'access arguments' => array('lab migration download code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'download.inc',
   );
   $items['lab_migration/full_download/experiment'] = array(
@@ -329,7 +329,7 @@ function lab_migration_menu()
     'description' => 'Code Download', 
     'page callback' => 'lab_migration_download_full_experiment',
     'access arguments' => array('lab migration approve code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'full_download.inc',
   );
   $items['lab_migration/full_download/lab'] = array(
@@ -337,7 +337,7 @@ function lab_migration_menu()
     'description' => 'Code Download', 
     'page callback' => 'lab_migration_download_full_lab',
     'access arguments' => array('lab migration approve code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'full_download.inc',
   );
  /* COMPLETED LAB MIGRATIONS */                                                
@@ -362,7 +362,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_run_form'),
     'access arguments' => array('lab migration download code'),
-    'type' => MENU_NORMAL_ITEM,
+    //'type' => MENU_NORMAL_ITEM,
     'file' => 'run.inc',
   );
   
@@ -371,7 +371,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_run_form_ajax'),
     'access arguments' => array('access content'),
-    'type' => MENU_NORMAL_ITEM,
+    //'type' => MENU_NORMAL_ITEM,
     'file' => 'run.inc',
   );
   $items['lab_migration_run_ajax'] = array(
@@ -384,7 +384,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_run_form_ajax'),
     'access arguments' => array('access content'),
-    'type' => MENU_NORMAL_ITEM,
+    //'type' => MENU_NORMAL_ITEM,
     'file' => 'run.inc',
   );*/
 
@@ -394,7 +394,7 @@ function lab_migration_menu()
     'description' => 'Generate Lab From Latex Script', 
     'page callback' => 'lab_migration_download_lab_pdf',
     'access arguments' => array('lab migration generate lab'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'latex.inc',
   );
   $items['lab_migration/delete_lab'] = array(
@@ -402,7 +402,7 @@ function lab_migration_menu()
     'description' => 'Delete Lab PDF', 
     'page callback' => 'lab_migration_delete_lab_pdf',
     'access arguments' => array('lab migration approve code'),
-    'type' => MENU_CALLBACK,
+    //'type' => MENU_CALLBACK,
     'file' => 'latex.inc',
   );
 
@@ -413,7 +413,7 @@ function lab_migration_menu()
     'page callback' => 'drupal_get_form',
     'page arguments' => array('lab_migration_settings_form'),
     'access arguments' => array('administer lab migration'),
-    'type' => MENU_NORMAL_ITEM,
+    //'type' => MENU_NORMAL_ITEM,
     'file' => 'settings.inc',
   );
    /* AJAX REQUEST */
@@ -455,7 +455,7 @@ function lab_migration_menu()
         'page arguments' => array(
             'generate_pdf',
         ),
-        'type' => MENU_CALLBACK,
+        //'type' => MENU_CALLBACK,
         'access arguments' => array(
             'generate pdf',
         ),
@@ -489,7 +489,7 @@ function lab_migration_menu()
     'page arguments'=> array(
     'generate_pdf'
     ),
-    'type'=> MENU_CALLBACK,
+    //'type'=> MENU_CALLBACK,
     'access arguments'=> array(
     'generate pdf'
     ),
@@ -524,7 +524,7 @@ function lab_migration_menu()
         "access arguments" => array(
             "verify certificates",
         ),
-        'type' => MENU_CALLBACK,
+        //'type' => MENU_CALLBACK,
         'file' => 'pdf/verify_certificates.inc',
     );
     $items["lab_migration/certificate/verify"] = array(
@@ -633,8 +633,8 @@ function lab_migration_ajax()
   {
     $chapter_number = arg(3);
     $preference_id = arg(4);
-    //$chapter_q = db_query("SELECT * FROM {lab_migration_chapter} WHERE number = %d AND preference_id = %d LIMIT 1", $chapter_number, $preference_id);
-    $query = db_select('lab_migration_chapter');
+    //$chapter_q = \Drupal::database()->query("SELECT * FROM {lab_migration_chapter} WHERE number = %d AND preference_id = %d LIMIT 1", $chapter_number, $preference_id);
+    $query = \Drupal::database()->select('lab_migration_chapter');
              $query->fields('lab_migration_chapter');
              $query->condition('number', $chapter_number);
              $query->condition('preference_id', $preference_id);
@@ -651,7 +651,7 @@ function lab_migration_ajax()
     $example_number = arg(5);
 
     $chapter_id = 0;    
-    $query = db_select('lab_migration_chapter');
+    $query = \Drupal::database()->select('lab_migration_chapter');
              $query->fields('lab_migration_chapter');
              $query->condition('number', $chapter_number);
              $query->condition('preference_id', $preference_id);
@@ -666,7 +666,7 @@ function lab_migration_ajax()
     }
 
     
-    $query = db_select('lab_migration_example');
+    $query = \Drupal::database()->select('lab_migration_example');
               $query->fields('lab_migration_example');
               $query->condition('chapter_id', $chapter_id);
               $query->condition('number', $example_number);
@@ -722,10 +722,10 @@ function lab_migration_samplecode_path() {
 /************************* USER VERIFICATION FUNCTIONS ************************/
 
 function lab_migration_get_proposal() {
-	global $user;
+	$user = \Drupal::currentUser();
 
-  //$proposal_q = db_query("SELECT * FROM {lab_migration_proposal} WHERE solution_provider_uid = ".$user->uid." AND solution_status = 2 ORDER BY id DESC LIMIT 1");
-   $query = db_select('lab_migration_proposal');
+  //$proposal_q = \Drupal::database()->query("SELECT * FROM {lab_migration_proposal} WHERE solution_provider_uid = ".$user->uid." AND solution_status = 2 ORDER BY id DESC LIMIT 1");
+   $query = \Drupal::database()->select('lab_migration_proposal');
             $query->fields('lab_migration_proposal');
             $query->condition('solution_provider_uid', $user->uid);
             $query->condition('solution_status', 2);
@@ -736,24 +736,27 @@ function lab_migration_get_proposal() {
   $proposal_data = $proposal_q->fetchObject();
   if (!$proposal_data)
   {
-    drupal_set_message("You do not have any approved Lab migraion solution proposal. Please check the " . l('available', 'lab_migration/open_proposal') . " Lab migration proposal.", 'error');
-    drupal_goto('');
+    // @FIXME
+// l() expects a Url object, created from a route name or external URI.
+// drupal_set_message("You do not have any approved Lab migraion solution proposal. Please check the " . l('available', 'lab_migration/open_proposal') . " Lab migration proposal.", 'error');
+
+    // drupal_goto('');
   }
 	switch ($proposal_data->approval_status)
 	{
 	case 0:
-		drupal_set_message(t('Proposal is awaiting approval.'), 'status');
+		\Drupal::messenger()->addStatus(t('Proposal is awaiting approval.'));
 		return FALSE;
 	case 1:
 		return $proposal_data;
 	case 2:
-		drupal_set_message(t('Proposal has been dis-approved.'), 'error');
+		\Drupal::messenger()->addError(t('Proposal has been dis-approved.'));
 		return FALSE;
 	case 3:
-		drupal_set_message(t('Proposal has been marked as completed.'), 'status');
+		\Drupal::messenger()->addStatus(t('Proposal has been marked as completed.'));
 		return FALSE;
 	default:
-		 drupal_set_message(t('Invalid proposal state. Please contact site administrator for further information.'), 'error');
+		 \Drupal::messenger()->addError(t('Invalid proposal state. Please contact site administrator for further information.'));
 		 return FALSE;
 	}
   return FALSE;
@@ -796,19 +799,22 @@ function lab_migration_get_category_name($category_id) {
 
 function _list_all_lm_certificates()
     {
-        $query = db_query("SELECT * FROM lab_migration_certificate");
+        $query = \Drupal::database()->query("SELECT * FROM lab_migration_certificate");
         $search_rows = array();
         $output = '';
         $details_list = $query->fetchAll();
         foreach ($details_list as $details)
             {
-              $search_rows[] = array(
-              $details->lab_name,
-              $details->institute_name,
-              $details->name,
-                l('Download Certificate', 'lab_migration/certificate/generate-pdf/' . $details->proposal_id . '/' . $details->id),
-                l('Edit Certificate', 'lab_migration/certificate/lm-participation/form/edit/' . $details->proposal_id . '/' . $details->id)
-                  );
+              // @FIXME
+// l() expects a Url object, created from a route name or external URI.
+// $search_rows[] = array(
+//               $details->lab_name,
+//               $details->institute_name,
+//               $details->name,
+//                 l('Download Certificate', 'lab_migration/certificate/generate-pdf/' . $details->proposal_id . '/' . $details->id),
+//                 l('Edit Certificate', 'lab_migration/certificate/lm-participation/form/edit/' . $details->proposal_id . '/' . $details->id)
+//                   );
+
             
             } 
         $search_header = array(
@@ -818,10 +824,19 @@ function _list_all_lm_certificates()
                 'Download Certificates',
                 'Edit Certificates'
         );
-        $output .= theme('table', array(
-                'header' => $search_header,
-                'rows' => $search_rows
-        ));
+        // @FIXME
+// theme() has been renamed to _theme() and should NEVER be called directly.
+// Calling _theme() directly can alter the expected output and potentially
+// introduce security issues (see https://www.drupal.org/node/2195739). You
+// should use renderable arrays instead.
+// 
+// 
+// @see https://www.drupal.org/node/2195739
+// $output .= theme('table', array(
+//                 'header' => $search_header,
+//                 'rows' => $search_rows
+//         ));
+
         return $output;
     }
 
@@ -886,7 +901,7 @@ function lab_migration_certificate_participation_form($form, $form_state)
     }
 function lab_migration_certificate_participation_form_submit($form, &$form_state)
     {
-        global $user;
+        $user = \Drupal::currentUser();
         $v = $form_state["values"];
         $result = "INSERT INTO {lab_migration_certificate} 
     (uid, name_title, name, email_id, institute_name, institute_address, lab_name, department, proposal_id,creation_date) VALUES
@@ -903,7 +918,7 @@ function lab_migration_certificate_participation_form_submit($form, &$form_state
                 ":proposal_id" => $v['proposal_id'],
                 ":creation_date" => time()
         );
-        $proposal_id = db_query($result, $args);
+        $proposal_id = \Drupal::database()->query($result, $args);
         drupal_goto('lab_migration/certificate');
     }
 function lab_migration_certificate_participation_edit_form($form, $form_state)
@@ -913,7 +928,7 @@ function lab_migration_certificate_participation_edit_form($form, $form_state)
         $certi_id = arg(6);
         if ($action == "edit")
             {
-                $query = db_query("SELECT * FROM lab_migration_certificate WHERE proposal_id=:prop_id AND id=:certi_id", array(
+                $query = \Drupal::database()->query("SELECT * FROM lab_migration_certificate WHERE proposal_id=:prop_id AND id=:certi_id", array(
                         ":prop_id" => $proposal_id,
                         ":certi_id" => $certi_id
                 ));
@@ -989,7 +1004,7 @@ function lab_migration_certificate_participation_edit_form($form, $form_state)
     }
 function lab_migration_certificate_participation_edit_form_submit($form, &$form_state)
     {
-        global $user;
+        $user = \Drupal::currentUser();
         $v = $form_state["values"];
         $result = "UPDATE lab_migration_certificate SET
     uid=:uid, 
@@ -1016,6 +1031,6 @@ function lab_migration_certificate_participation_edit_form_submit($form, &$form_
                 ":creation_date" => time(),
                 ":certi_id" => $v['certi_id']
         );
-        $proposal_id = db_query($result, $args);
+        $proposal_id = \Drupal::database()->query($result, $args);
         drupal_goto('lab_migration/certificate');
     }
