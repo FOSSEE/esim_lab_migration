@@ -78,7 +78,7 @@ class LabMigrationBulkApprovalForm extends FormBase {
       '#type' => 'markup',
       '#markup' => Link::fromTextAndUrl(
         $this->t('Download'),
-        Url::fromUri('internal:/lab-migration/full-download/lab/' . $lab_default_value)
+        Url::fromUri('internal:/lab-migration/full_download/lab/' . $lab_default_value)
       )->toString() . ' ' . $this->t('(Download all the approved and unapproved solutions of the entire lab)'),
       // '#states' => [
       //     'invisible' => [
