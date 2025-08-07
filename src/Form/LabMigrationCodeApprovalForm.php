@@ -129,41 +129,81 @@ class LabMigrationCodeApprovalForm extends FormBase {
 
 
    
-    // ===
-    $solution_files_html = '';
+    // // ===
+    // $solution_files_html = '';
 
-    $query = \Drupal::database()->select('lab_migration_solution_files', 's')
-      ->fields('s')
-      ->condition('solution_id', $solution_id)
-      ->orderBy('id', 'ASC');
+    // $query = \Drupal::database()->select('lab_migration_solution_files', 's')
+    //   ->fields('s')
+    //   ->condition('solution_id', $solution_id)
+    //   ->orderBy('id', 'ASC');
     
-    $solution_files_q = $query->execute();
+    // $solution_files_q = $query->execute();
     
-    foreach ($solution_files_q as $solution_files_data) {
-      $code_file_type = match ($solution_files_data->filetype) {
-        'S' => 'Source',
-        'R' => 'Result',
-        'X' => 'Xcox',
-        'U' => 'Unknown',
-        default => 'Unknown',
-      };
+    // foreach ($solution_files_q as $solution_files_data) {
+    //   $code_file_type = match ($solution_files_data->filetype) {
+    //     'S' => 'Source',
+    //     'R' => 'Result',
+    //     'X' => 'Xcox',
+    //     'U' => 'Unknown',
+    //     default => 'Unknown',
+    //   };
     
-      // 1️⃣ Solution file link
-      $file_url = Url::fromUri('internal:/lab-migration/download/file/' . $solution_files_data->id);
-      $file_link = Link::fromTextAndUrl($solution_files_data->filename, $file_url)->toString();
+    //   // 1️⃣ Solution file link
+    //   $file_url = Url::fromUri('internal:/lab-migration/download/file/' . $solution_files_data->id);
+    //   $file_link = Link::fromTextAndUrl($solution_files_data->filename, $file_url)->toString();
     
-      $solution_files_html .= $file_link . ' (' . $code_file_type . ')<br/>';
+    //   $solution_files_html .= $file_link . ' (' . $code_file_type . ')<br/>';
     
-      // 2️⃣ If PDF exists, add PDF link
-      if (strlen($solution_files_data->pdfpath) >= 5) {
-        $pdfname = substr($solution_files_data->pdfpath, strrpos($solution_files_data->pdfpath, '/') + 1);
-        $pdf_url = Url::fromUri('internal:/lab-migration/download/pdf/' . $solution_files_data->id);
-        $pdf_link = Link::fromTextAndUrl($pdfname, $pdf_url)->toString();
-        $solution_files_html .= $pdf_link . ' (PDF File)<br/>';
-      }
-    }
+    //   // 2️⃣ If PDF exists, add PDF link
+    //   if (strlen($solution_files_data->pdfpath) >= 5) {
+    //     $pdfname = substr($solution_files_data->pdfpath, strrpos($solution_files_data->pdfpath, '/') + 1);
+    //     $pdf_url = Url::fromUri('internal:/lab-migration/download/pdf/' . $solution_files_data->id);
+    //     $pdf_link = Link::fromTextAndUrl($pdfname, $pdf_url)->toString();
+    //     $solution_files_html .= $pdf_link . ' (PDF File)<br/>';
+    //   }
+    // }
     
-    
+   
+$solution_files_html = '';
+
+$query = \Drupal::database()->select('lab_migration_solution_files', 's')
+  ->fields('s')
+  ->condition('solution_id', $solution_id)
+  ->orderBy('id', 'ASC');
+
+$solution_files_q = $query->execute();
+
+foreach ($solution_files_q as $solution_files_data) {
+  // Filter only Source and PDF
+  if (!in_array($solution_files_data->filetype, ['S']) && strlen($solution_files_data->pdfpath) < 5) {
+    continue;
+  }
+
+  // Determine code file type
+  $code_file_type = match ($solution_files_data->filetype) {
+    'S' => 'Source',
+    'R' => 'Result',
+    'X' => 'Xcox',
+    'U' => 'Unknown',
+    default => 'Unknown',
+  };
+
+  // Add source file link (if type is Source)
+  if ($solution_files_data->filetype === 'S') {
+    $source_url = Url::fromUri('internal:/lab-migration/download/file/' . $solution_files_data->id);
+    $solution_files_html .= Link::fromTextAndUrl($solution_files_data->filename, $source_url)->toString();
+    $solution_files_html .= ' (' . $code_file_type . ')<br/>';
+  }
+
+  // Add PDF file link (if exists)
+  if (strlen($solution_files_data->pdfpath) >= 5) {
+    $pdfname = basename($solution_files_data->pdfpath);
+    $pdf_url = Url::fromUri('internal:/lab-migration/download/pdf/' . $solution_files_data->id);
+    $solution_files_html .= Link::fromTextAndUrl($pdfname, $pdf_url)->toString();
+    $solution_files_html .= ' (PDF File)<br/>';
+  }
+}
+
 
     $form['solution_files'] = [
       '#type' => 'item',

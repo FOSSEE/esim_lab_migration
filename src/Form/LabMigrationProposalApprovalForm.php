@@ -339,6 +339,8 @@ public function cancelForm(array &$form, \Drupal\Core\Form\FormStateInterface $f
 
       \Drupal::messenger()->addMessage('Lab migration proposal No. ' . $proposal_id . ' approved. User has been notified of the approval.', 'status');
       //drupal_goto('lab_migration/manage_proposal');
+      $form_state->setRedirect('lab_migration.proposal_pending');
+
       return;
     }
     else {
@@ -384,12 +386,12 @@ public function cancelForm(array &$form, \Drupal\Core\Form\FormStateInterface $f
 
         \Drupal::messenger()->addMessage('Lab migration proposal No. ' . $proposal_id . ' dis-approved. User has been notified of the dis-approval.', 'error');
         //drupal_goto('lab_migration/manage_proposal');
-        // $response = new RedirectResponse(Url::fromRoute('lab_migration.proposal_pending')->toString());
-        // $response->send();
-        // $form_state->setRedirect('lab_migration.proposal_pending');
-        $url = Url::fromRoute('lab_migration.proposal_pending')->toString();
-        \Drupal::service('request_stack')->getCurrentRequest()->query->set('destination', $url);
-          return;
+        // $url = Url::fromRoute('lab_migration.proposal_pending')->toString();
+        // \Drupal::service('request_stack')->getCurrentRequest()->query->set('destination', $url);
+        //   return;
+        $form_state->setRedirect('lab_migration.proposal_pending');
+return;
+
         
       }
     }

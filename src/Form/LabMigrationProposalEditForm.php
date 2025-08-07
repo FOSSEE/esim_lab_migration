@@ -204,11 +204,11 @@ return new RedirectResponse('/lab-migration/manage-proposal/pending');
         'placeholder' => 'Insert pincode of your city/ village....'
         ],
     ];
-    $form['operating_system'] = [
-      '#type' => 'textfield',
-      '#default_value' => $proposal_data->operating_system,
-      '#title' => t('Operating System'),
-    ];
+    // $form['operating_system'] = [
+    //   '#type' => 'textfield',
+    //   '#default_value' => $proposal_data->operating_system,
+    //   '#title' => t('Operating System'),
+    // ];
     $form['version'] = [
       '#type' => 'select',
       '#title' => t('R Version'),

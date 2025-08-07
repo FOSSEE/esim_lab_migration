@@ -44,15 +44,15 @@ $proposal_id = (int) $route_match->getParameter('proposal_id');
       }
       else {
         \Drupal::messenger()->addmessage(t('Invalid proposal selected. Please try again.'), 'error');
-        // RedirectResponse('lab-migration/manage-proposal');
-        //return new TrustedRedirectResponse('/lab-migration/manage-proposal');
+        RedirectResponse('lab-migration/manage-proposal');
+        return new TrustedRedirectResponse('/lab-migration/manage-proposal');
         return;
       }
     }
     else {
       \Drupal::messenger()->addmessage(t('Invalid proposal selected. Please try again.'), 'error');
-      // RedirectResponse('lab-migration/manage-proposal');
-     // return new RedirectResponse('/lab-migration/manage-proposal');
+      RedirectResponse('lab-migration/manage-proposal');
+     return new RedirectResponse('/lab-migration/manage-proposal');
       return;
     }
 
@@ -101,17 +101,24 @@ $proposal_id = (int) $route_match->getParameter('proposal_id');
       '#markup' => $proposal_data->pincode,
       '#title' => t('Pincode/Postal code'),
     ];
-    $form['operating_system'] = [
+    // $form['operating_system'] = [
+    //   '#type' => 'item',
+    //   '#markup' => $proposal_data->operating_system,
+    //   '#title' => t('Operating System'),
+    // ];
+    // $form['version'] = [
+    //   '#type' => 'select',
+    //   '#title' => t('eSim version used '),
+    //   // '#options' => \Drupal::service("lab_migration_global")->_lm_list_of_software_version(),
+    //   '#default_value' => $proposal_data->version,
+    // ];
+
+    $form['esim_version'] = array(
       '#type' => 'item',
-      '#markup' => $proposal_data->operating_system,
-      '#title' => t('Operating System'),
-    ];
-    $form['version'] = [
-      '#type' => 'item',
-      '#markup' => $proposal_data->version,
-      // '#markup' => Xss::filter($proposal_data->version),
-      '#title' => t('R Version'),
-    ];
+      '#title' => t('eSim version used'),
+      '#markup'=>$proposal_data->esim_version,
+    );
+  
     $form['syllabus_link'] = [
       '#type' => 'item',
       '#markup' => $proposal_data->syllabus_link,
@@ -190,42 +197,42 @@ $proposal_id = (int) $route_match->getParameter('proposal_id');
       '#markup' => $proposal_status,
       '#title' => t('Proposal Status'),
     ];
-    if ($proposal_data->approval_status == 0) {
-      if ($proposal_data->expected_completion_date == 0) {
-        $form['completion_date'] = [
-          '#type' => 'item',
-          '#markup' => 'Expecting date of completion soon',
-          '#title' => t('Date of Completion'),
-        ];
-      }
-      else {
-        $form['completion_date'] = [
-          '#type' => 'item',
-          '#markup' => date('d-m-Y', $proposal_data->expected_completion_date),
-          '#title' => t('Expected date of completion'),
-        ];
-      }
-    }
-    if ($proposal_data->approval_status == 1) {
-      if ($proposal_data->expected_completion_date == 0) {
-        $form['completion_date'] = [
-          '#type' => 'item',
-          '#markup' => 'Expecting date of completion soon',
-          '#title' => t('Date of Completion'),
-        ];
-      }
-      else {
-        $form['completion_date'] = [
-          '#type' => 'item',
-          '#markup' => date('d-m-Y', $proposal_data->expected_completion_date),
-          '#title' => t('Date of Completion'),
-        ];
-      }
-    }
+    // if ($proposal_data->approval_status == 0) {
+    //   if ($proposal_data->expected_completion_date == 0) {
+    //     $form['completion_date'] = [
+    //       '#type' => 'item',
+    //       '#markup' => 'Expecting date of completion soon',
+    //       '#title' => t('Date of Completion'),
+    //     ];
+    //   }
+    //   else {
+    //     $form['completion_date'] = [
+    //       '#type' => 'item',
+    //       '#markup' => date('d-m-Y', $proposal_data->expected_completion_date),
+    //       '#title' => t('Expected date of completion'),
+    //     ];
+    //   }
+    // }
+    // if ($proposal_data->approval_status == 1) {
+    //   if ($proposal_data->expected_completion_date == 0) {
+    //     $form['completion_date'] = [
+    //       '#type' => 'item',
+    //       '#markup' => 'Expecting date of completion soon',
+    //       '#title' => t('Date of Completion'),
+    //     ];
+    //   }
+    //   else {
+    //     $form['completion_date'] = [
+    //       '#type' => 'item',
+    //       '#markup' => date('d-m-Y', $proposal_data->expected_completion_date),
+    //       '#title' => t('Date of Completion'),
+    //     ];
+    //   }
+    // }
     if ($proposal_data->approval_status == 0) {
       $form['approve'] = [
         '#type' => 'item',
-        //'#markup' => Link::fromTextAndUrl('Click here', 'lab-migration/manage-proposal/approve/' . $proposal_id),
+        '#markup' => Link::fromTextAndUrl('Click here', 'lab-migration/manage-proposal/approve/' . $proposal_id),
         '#title' => t('Approve'),
       ];
     }
@@ -264,8 +271,11 @@ $proposal_id = (int) $route_match->getParameter('proposal_id');
     ];
     $form['cancel'] = [
       '#type' => 'markup',
-     // '#markup' => Link::fromTextAndUrl(t('Cancel'), 'lab-migration/manage-proposal/all'),
+      '#markup' => Link::fromTextAndUrl($this->t('Cancel'), Url::fromRoute('lab_migration.proposal_all'))->toString(),
     ];
+    
+    
+    
     return $form;
   }
 
@@ -310,11 +320,11 @@ $response->send();
       ];
        $result = \Drupal::database()->query($up_query, $args);
       
-      // \Drupal::service("lab_migration_global")->CreateReadmeFileLabMigration($proposal_id);
-      // if (!$result) {
-      //   \Drupal::messenger()->addmessage('Error in update status', 'error');
-      //   return;
-      // }
+      \Drupal::service("lab_migration_global")->CreateReadmeFileLabMigration($proposal_id);
+      if (!$result) {
+        \Drupal::messenger()->addmessage('Error in update status', 'error');
+        return;
+      }
       /* sending email */
   //     $user_data = User::load($proposal_data->uid);
   //     $email_to = $user_data->mail;

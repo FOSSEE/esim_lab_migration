@@ -130,61 +130,47 @@ class LabMigrationRunForm extends FormBase {
           '#markup' => Link::fromTextAndUrl('Download Solution', Url::fromUri('internal:/lab-migration/download/solution/' . $form_state->getValue('solution_list')))->toString()
         ];
      
-$query = \Drupal::database()->select('lab_migration_solution_files', 's');
-      $query->fields('s');
-      $query->condition('solution_id', $form_state->getValue('solution_list'));
-      $solution_list_q = $query->execute();
-      if ($solution_list_q) {
-        $solution_files_rows = [];
-        while ($solution_list_data = $solution_list_q->fetchObject()) {
  
-//var_dump($solution_list_data);die;
-          // $solution_file_type = [];
-          // var_dump($solution_list_data->filetype);die;
-          switch ($solution_list_data->filetype) {
-            case 'S':
-              $solution_file_type = 'Source or Main file';
-              break;
-            case 'R':
-              $solution_file_type = 'Result file';
-              break;
-            case 'X':
-              $solution_file_type = 'xcos file';
-              break;
-            default:
-              $solution_file_type = 'Unknown';
-              break;
-          }
+        $solution_files_rows = [];
+
+        $query = \Drupal::database()->select('lab_migration_solution_files', 's');
+        $query->fields('s');
+        $query->condition('solution_id', $form_state->getValue('solution_list'));
+        $solution_list_q = $query->execute();
         
-          // Create file download link
-          $items = [
-           
-             Link::fromTextAndUrl($solution_list_data->filename, Url::fromUri('internal:/lab-migration/download/file/' . $solution_list_data->id))->toString(),
-            "{$solution_file_type}"
-          ];
+        if ($solution_list_q) {
+          while ($solution_list_data = $solution_list_q->fetchObject()) {
+            $ext = strtolower(pathinfo($solution_list_data->filename, PATHINFO_EXTENSION));
+        
+            if ($ext === 'zip') {
+              switch ($solution_list_data->filetype) {
+                case 'S': $solution_file_type = 'Source or Main file'; break;
+                case 'R': $solution_file_type = 'Result file'; break;
+                case 'X': $solution_file_type = 'xcos file'; break;
+                default:  $solution_file_type = 'Unknown'; break;
+              }
+        
+              $items = [
+                Link::fromTextAndUrl($solution_list_data->filename, Url::fromUri('internal:/lab-migration/download/file/' . $solution_list_data->id))->toString(),
+                $solution_file_type,
+              ];
+        
+              $solution_files_rows[] = $items;
+            }
+          }
         }
-      }
-      array_push($solution_files_rows, $items);
-      //var_dump($solution_rows);die;
+        
         $form['download_solution_wrapper']['solution_files'] = [
           '#type' => 'fieldset',
-          '#title' => t('List of solution files'),
+          '#title' => t('List of solution ZIP files'),
         ];
-        $solution_files_header = ['Filename', 'Type']; // Table headers
-
-        $table = [
+        
+        $form['download_solution_wrapper']['solution_files']['table'] = [
           '#type' => 'table',
-          '#header' => $solution_files_header,
+          '#header' => ['Filename', 'Type'],
           '#rows' => $solution_files_rows,
-        
-        '#attributes' => [
-          'style' => 'width: 100%;',
-          
-        ],
-      ];
-            // Add the table to the fieldset
-$form['download_solution_wrapper']['solution_files']['table'] = $table;
-        
+          '#attributes' => ['style' => 'width: 100%;'],
+        ];        
        return $form;
 }
 
@@ -372,7 +358,14 @@ $response->send();
           
       }
       
-    $form['lab_details']['#markup'] = '<span style="color: rgb(128, 0, 0);"><strong>About the Lab</strong></span></td><td style="width: 35%;"><br />' . '<ul>' . '<li><strong>Proposer Name:</strong> ' . $lab_details->name_title . ' ' . $lab_details->name . '</li>' . '<li><strong>Title of the Lab:</strong> ' . $lab_details->lab_title . '</li>' . '<li><strong>Department:</strong> ' . $lab_details->department . '</li>' . '<li><strong>University:</strong> ' . $lab_details->university . '</li>' . '<li><strong>Version:</strong> ' . $lab_details->version . '</li>' . '<li><strong>Operating System:</strong> ' . $lab_details->operating_system . '</li>' . '</ul>' . $solution_provider;
+    $form['lab_details']['#markup'] = '<span style="color: rgb(128, 0, 0);">
+    <strong>About the Lab</strong></span></td><td style="width: 35%;"><br />' 
+    . '<ul>' . '<li><strong>Proposer Name:</strong> ' 
+    . $lab_details->name_title .  ' ' . $lab_details->name . '</li>' 
+    . '<li><strong>Title of the Lab:</strong> ' . $lab_details->lab_title . '</li>'
+     . '<li><strong>Department:</strong> ' . $lab_details->department . '</li>' 
+     . '<li><strong>University:</strong> ' . $lab_details->university . '</li>'
+      . '</ul>' . $solution_provider;
 
     $details = $form['lab_details']['#markup'];
     return $details;

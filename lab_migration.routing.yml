@@ -41,7 +41,7 @@ lab_migration.category_all:
   requirements:
     _permission: 'lab migration manage proposal'
 lab_migration.category_edit_form:
-  path: /lab-migration/manage_proposal/category/edit/{proposal_id}
+  path: /lab-migration/manage_proposal/category/edit/{id}
   defaults:
     _title: 'Edit Category'
     _form: \Drupal\lab_migration\Form\LabMigrationCategoryEditForm
@@ -83,7 +83,7 @@ lab_migration.proposal_open:
   requirements:
     _permission: 'lab migration propose solution'
 lab_migration.solution_proposal_form:
-  path: /lab-migration/show_proposal
+  path: /lab-migration/show_proposal/{id}
   defaults:
     _title: 'Lab Migration Solution Proposal'
     _form: \Drupal\lab_migration\Form\LabMigrationSolutionProposalForm
@@ -146,14 +146,14 @@ lab_migration.upload_code_delete:
   requirements:
     _permission: 'lab migration upload code'
 lab_migration.download_solution_file:
-  path: /lab-migration/download/file{solution_file_id}
+  path: /lab-migration/download/file/{solution_file_id}
   defaults:
     _title: 'Code Download'
     _controller: '\Drupal\lab_migration\Controller\DefaultController::lab_migration_download_solution_file'
   requirements:
     _permission: 'lab migration download code'
 lab_migration.download_pdf_file:
-  path: /lab-migration/download/pdf
+  path: /lab-migration/download/pdf/{solution_file_id}
   defaults:
     _title: 'PDF Download'
     _controller: '\Drupal\lab_migration\Controller\DefaultController::lab_migration_download_pdf_file'
@@ -195,7 +195,7 @@ lab_migration.download_full_experiment:
   requirements:
     _permission: 'lab migration approve code'
 lab_migration.download_full_lab:
-  path: /lab-migration/full_download/lab/{id}
+  path: /lab-migration/full_download/lab/{lab_id}
   defaults:
     _title: 'Code Download'
     _controller: '\Drupal\lab_migration\Controller\DefaultController::lab_migration_download_full_lab'

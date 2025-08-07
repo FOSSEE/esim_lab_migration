@@ -95,29 +95,68 @@ class LabMigrationUploadCodeForm extends FormBase {
       '#required' => TRUE,
     ];
 
+    // $form['code_warning'] = [
+    //   '#type' => 'item',
+    //   '#title' => $this->t('Upload all the eSim project files in .zip format'),
+    //   '#prefix' => '<div style="color:red">',
+    //   '#suffix' => '</div>',
+    // ];
     $form['code_warning'] = [
-      '#type' => 'item',
-      '#title' => $this->t('Upload all the eSim project files in .zip format'),
-      '#prefix' => '<div style="color:red">',
-      '#suffix' => '</div>',
+      '#type' => 'container',
+      '#attributes' => ['style' => 'color: red; font-weight: bold;'],
+      'text' => [
+        '#markup' => $this->t('Upload all the eSim project files in .zip format'),
+      ],
     ];
+    
 
-    $form['sourcefile1'] = [
+    // $form['sourcefile1'] = [
+    //   '#type' => 'file',
+    //   '#title' => $this->t('Upload main or source file'),
+    //   '#description' => $this->t('Allowed: ') . ($config->get('lab_migration_source_extensions') ?? ''),
+    // ];
+
+    // $form['samplemarkup'] = [
+    //   '#type' => 'markup',
+    //   '#markup' => "<a href='http://esim.fossee.in/resource/book/analysis_of_BJT_amplr.pdf' target='_blank'>View Sample PDF</a>",
+    // ];
+
+    // $form['chppdf'] = [
+    //   '#type' => 'file',
+    //   '#title' => $this->t('Upload PDF File'),
+    //   '#description' => $this->t('Allowed: ') . ($config->get('lab_migration_pdf_extensions') ?? ''),
+    // ];
+
+    
+    $form['source_file_group'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Main or Source Files'),
+      '#open' => TRUE, // Set to FALSE if you want it collapsed initially
+      '#attributes' => ['class' => ['source-file-box']], // Optional class for custom styling
+    ];
+    
+    $form['source_file_group']['sourcefile1'] = [
       '#type' => 'file',
       '#title' => $this->t('Upload main or source file'),
-      '#description' => $this->t('Allowed: ') . ($config->get('lab_migration_source_extensions') ?? ''),
+      '#description' => $this->t('Only alphabets and numbers are allowed as a valid filename.') . '<br />' .
+        $this->t('Allowed file extensions: ') . ($config->get('lab_migration_source_extensions') ?? ''),
     ];
-
-    $form['samplemarkup'] = [
-      '#type' => 'markup',
-      '#markup' => "<a href='http://esim.fossee.in/resource/book/analysis_of_BJT_amplr.pdf' target='_blank'>View Sample PDF</a>",
-    ];
-
-    $form['chppdf'] = [
+    
+    $form['source_file_group']['chppdf'] = [
       '#type' => 'file',
       '#title' => $this->t('Upload PDF File'),
-      '#description' => $this->t('Allowed: ') . ($config->get('lab_migration_pdf_extensions') ?? ''),
+      '#description' => $this->t('No spaces or any special characters allowed in filename.') . '<br />' .
+        $this->t('Allowed file extensions: ') . ($config->get('lab_migration_pdf_extensions') ?? ''),
     ];
+    
+    $form['source_file_group']['samplemarkup'] = [
+      '#type' => 'markup',
+      '#markup' => "<div style='text-align:right; margin-top:-20px; margin-bottom:10px;'>
+                      <strong>For PDF reference :</strong> 
+                      <a href='http://esim.fossee.in/resource/book/analysis_of_BJT_amplr.pdf' target='_blank'>View Sample PDF</a>
+                    </div>",
+    ];
+    
 
     $form['submit'] = [
       '#type' => 'submit',
