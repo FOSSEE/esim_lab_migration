@@ -320,7 +320,7 @@ $response->send();
       ];
        $result = \Drupal::database()->query($up_query, $args);
       
-      \Drupal::service("lab_migration_global")->CreateReadmeFileLabMigration($proposal_id);
+      \Drupal::service("lab_migration_global")->CreateReadmeFileLabMigration>($proposal_id);
       if (!$result) {
         \Drupal::messenger()->addmessage('Error in update status', 'error');
         return;
