@@ -55,7 +55,7 @@ lab_migration.proposal_approval_form:
   requirements:
     _permission: 'lab migration manage proposal'
 lab_migration.solution_proposal_approval_form:
-  path: /lab-migration/manage_proposal/solution_proposal_approve
+  path: /lab-migration/manage_proposal/solution_proposal_approve/{proposal_id}
   defaults:
     _title: 'Approve Solution Proposal'
     _form: \Drupal\lab_migration\Form\LabMigrationSolutionProposalApprovalForm

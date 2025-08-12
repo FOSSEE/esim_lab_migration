@@ -348,7 +348,9 @@ public function cancelForm(array &$form, \Drupal\Core\Form\FormStateInterface $f
         $query = "UPDATE {lab_migration_proposal} SET approver_uid = :uid, approval_date = :date, approval_status = 2, message = :message, solution_provider_uid = 0, solution_status = 0 WHERE id = :proposal_id";
         $args = [
           // ":uid" => $user->uid,
-          'uid' => $this->currentUser->id(),
+          // 'uid' => $this->currentUser->id(),
+          'uid' => \Drupal::currentUser()->id(),
+
           // 'uid' => $user->get('uid')->value,
           ":date" => time(),
           ":message" => $form_state->getValue(['message']),

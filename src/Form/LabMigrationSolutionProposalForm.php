@@ -12,6 +12,9 @@
  use Drupal\Core\Form\FormStateInterface;
  use Drupal\Core\Url;
  use Drupal\Core\Link;
+ use Drupal\Core\Session\AccountInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
  
  class LabMigrationSolutionProposalForm extends FormBase {
  
@@ -38,12 +41,18 @@
       Url::fromUri('internal:/user/' . $proposal_data->uid)
     )->toRenderable();
     
+    // $form['name'] = [
+    //   '#type' => 'item',
+    //   '#title' => $this->t('Proposer Name'),
+    //   '#markup' => render($proposer_link),
+    // ];
+ 
     $form['name'] = [
       '#type' => 'item',
       '#title' => $this->t('Proposer Name'),
-      '#markup' => render($proposer_link),
+      'link' => $proposer_link,
     ];
- 
+    
     //  $form['name'] = [
     //    '#type' => 'item',
     //   //  '#markup' => \Drupal::l($proposal_data->name_title . ' ' . $proposal_data->name, Url::fromUri('internal:/user/' . $proposal_data->uid)),
@@ -128,12 +137,20 @@
        '#type' => 'fieldset',
        '#title' => $this->t('Sample Source File'),
      ];
- 
+
+     $allowed_extensions = \Drupal::config('lab_migration.settings')->get('lab_migration_source_extensions') ?? '';
+
      $form['samplefile']['samplefile1'] = [
        '#type' => 'file',
        '#title' => $this->t('Upload sample source file'),
-       '#description' => $this->t('Separate filenames with underscore. No spaces or any special characters allowed in filename. <span style="color:red;">Allowed file extensions: ') . variable_get('textbook_companion_source_extensions', '') . '</span>',
-     ];
+       '#description' => $this->t('Separate filenames with underscore. No spaces or any special characters allowed in filename. <span style="color:red;">Allowed file extensions: @ext</span>', [
+    '@ext' => $allowed_extensions,
+  ]),
+
+
+ 
+];
+
  
      $form['submit'] = [
        '#type' => 'submit',
@@ -145,12 +162,16 @@
  
 
   public function validateForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    $config = \Drupal::config('lab_migration.settings');
+
     $user = \Drupal::currentUser();
 
     //$solution_provider_q = \Drupal::database()->query("SELECT * FROM {lab_migration_proposal} WHERE solution_provider_uid = ".$user->uid." AND approval_status IN (0, 1) AND solution_status IN (0, 1, 2)");
     $query = \Drupal::database()->select('lab_migration_proposal');
     $query->fields('lab_migration_proposal');
-    $query->condition('solution_provider_uid', $user->uid);
+    // $query->condition('solution_provider_uid', $user->uid);
+    $query->condition('solution_provider_uid', $user->id());
+
     $query->condition('approval_status', [0, 1], 'IN');
     $query->condition('solution_status', [0, 1, 2], 'IN');
     $solution_provider_q = $query->execute();
@@ -183,7 +204,7 @@
           $allowed_extensions_str = '';
           switch ($file_type) {
             case 'S':
-              $allowed_extensions_str = variable_get('lab_migration_source_extensions', '');
+              $allowed_extensions_str = \Drupal::config('lab_migration.settings')->get('lab_migration_source_extensions', '');
               break;
 
           }
@@ -197,9 +218,9 @@
           }
 
           /* check if valid file name */
-          if (!lab_migration_check_valid_filename($_FILES['files']['name'][$file_form_name])) {
-            $form_state->setErrorByName($file_form_name, t('Invalid file name specified. Only alphabets and numbers are allowed as a valid filename.'));
-          }
+          // if (!lab_migration_check_valid_filename($_FILES['files']['name'][$file_form_name])) {
+          //   $form_state->setErrorByName($file_form_name, t('Invalid file name specified. Only alphabets and numbers are allowed as a valid filename.'));
+          // }
         }
       }
     }
@@ -207,7 +228,9 @@
   }
 
   public function submitForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
-    $user = \Drupal::currentUser();
+    // $user = \Drupal::currentUser();
+    $uid = \Drupal::currentUser()->id();
+
     $root_path = lab_migration_samplecode_path();
     // $proposal_id = (int) arg(2);
     $route_match = \Drupal::routeMatch();
@@ -221,11 +244,11 @@
     $proposal_q = $query->execute();
     $proposal_data = $proposal_q->fetchObject();
     if (!$proposal_data) {
-      Drupal::messenger()->addMessage("Invalid proposal.", 'error');
+      \Drupal::messenger()->addMessage("Invalid proposal.", 'error');
       //drupal_goto('lab_migration/open_proposal');
     }
     if ($proposal_data->solution_provider_uid != 0) {
-      Drupal::messenger()->addMessage("Someone has already applied for solving this Lab.", 'error');
+      \Drupal::messenger()->addMessage("Someone has already applied for solving this Lab.", 'error');
       //drupal_goto('lab_migration/open_proposal');
     }
     $actual_path = "";
@@ -242,7 +265,7 @@
         $file_type = 'S';
 
         if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])) {
-          Drupal::messenger()->addMessage(t("Error uploading file. File !filename already exists.", [
+          \Drupal::messenger()->addMessage(t("Error uploading file. File !filename already exists.", [
             '!filename' => $_FILES['files']['name'][$file_form_name]
             ]), 'error');
           //drupal_goto('lab_migration/open_proposal');
@@ -253,10 +276,10 @@
         if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name])) {
           $actual_path = $dest_path . $_FILES['files']['name'][$file_form_name];
 
-          Drupal::messenger()->addMessage($file_name . ' uploaded successfully.', 'status');
+          \Drupal::messenger()->addMessage($file_name . ' uploaded successfully.', 'status');
         }
         else {
-          Drupal::messenger()->addMessage('Error uploading file : ' . $dest_path . '/' . $file_name, 'error');
+          \Drupal::messenger()->addMessage('Error uploading file : ' . $dest_path . '/' . $file_name, 'error');
           //drupal_goto('lab_migration/open_proposal');
         }
       }
@@ -264,46 +287,50 @@
 
 
     $query = "UPDATE {lab_migration_proposal} set solution_provider_uid = :uid, solution_status = 1, solution_provider_name_title = :solution_provider_name_title, solution_provider_name = :solution_provider_contact_name, solution_provider_contact_ph = :solution_provider_contact_ph, solution_provider_department = :solution_provider_department, solution_provider_university = :solution_provider_university,samplefilepath=:samplefilepath WHERE id = :proposal_id";
+
+    $user = \Drupal::currentUser();
+
     $args = [
-      ":uid" => $user->uid,
-      ":solution_provider_name_title" => $form_state->getValue(['solution_provider_name_title']),
-      ":solution_provider_contact_name" => $form_state->getValue(['solution_provider_name']),
-      ":solution_provider_contact_ph" => $form_state->getValue(['solution_provider_contact_ph']),
-      ":solution_provider_department" => $form_state->getValue(['solution_provider_department']),
-      ":solution_provider_university" => $form_state->getValue(['solution_provider_university']),
+      ":uid" => $user->id(),
+      ":solution_provider_name_title" => $form_state->getValue('solution_provider_name_title'),
+      ":solution_provider_contact_name" => $form_state->getValue('solution_provider_name'),
+      ":solution_provider_contact_ph" => $form_state->getValue('solution_provider_contact_ph'),
+      ":solution_provider_department" => $form_state->getValue('solution_provider_department'),
+      ":solution_provider_university" => $form_state->getValue('solution_provider_university'),
       ":samplefilepath" => $actual_path,
       ":proposal_id" => $proposal_id,
     ];
+    
     $result = \Drupal::database()->query($query, $args);
-    Drupal::messenger()->addMessage("We have received your application. We will get back to you soon.", 'status');
+    \Drupal::messenger()->addMessage("We have received your application. We will get back to you soon.", 'status');
 
     /* sending email */
-    $email_to = $user->mail;
+    // $email_to = $user->mail;
 
-    $from = variable_get('lab_migration_from_email', '');
-    $bcc = variable_get('lab_migration_emails', '');
-    $cc = variable_get('lab_migration_cc_emails', '');
+    // $from = variable_get('lab_migration_from_email', '');
+    // $bcc = variable_get('lab_migration_emails', '');
+    // $cc = variable_get('lab_migration_cc_emails', '');
 
-    $param['solution_proposal_received']['proposal_id'] = $proposal_id;
-    $param['solution_proposal_received']['user_id'] = $user->uid;
-    $param['solution_proposal_received']['headers'] = [
-      'From' => $from,
-      'MIME-Version' => '1.0',
-      'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
-      'Content-Transfer-Encoding' => '8Bit',
-      'X-Mailer' => 'Drupal',
-      'Cc' => $cc,
-      'Bcc' => $bcc,
-    ];
+    // $param['solution_proposal_received']['proposal_id'] = $proposal_id;
+    // $param['solution_proposal_received']['user_id'] = $user->uid;
+    // $param['solution_proposal_received']['headers'] = [
+    //   'From' => $from,
+    //   'MIME-Version' => '1.0',
+    //   'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
+    //   'Content-Transfer-Encoding' => '8Bit',
+    //   'X-Mailer' => 'Drupal',
+    //   'Cc' => $cc,
+    //   'Bcc' => $bcc,
+    // ];
 
-    if (!drupal_mail('lab_migration', 'solution_proposal_received', $email_to, language_default(), $param, $from, TRUE)) {
-      Drupal::messenger()->addMessage('Error sending email message.', 'error');
-    }
+    // if (!drupal_mail('lab_migration', 'solution_proposal_received', $email_to, language_default(), $param, $from, TRUE)) {
+    //   \Drupal::messenger()->addMessage('Error sending email message.', 'error');
+    // }
 
     /* sending email */
     /* $email_to = variable_get('lab_migration_emails', '');
   if (!drupal_mail('lab_migration', 'solution_proposal_received', $email_to , language_default(), $param, variable_get('lab_migration_from_email', NULL), TRUE))
-    Drupal::messenger()->addMessage('Error sending email message.', 'error');*/
+    \Drupal::messenger()->addMessage('Error sending email message.', 'error');*/
 
     //drupal_goto('lab_migration/open_proposal');
   }

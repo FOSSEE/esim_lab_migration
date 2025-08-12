@@ -129,7 +129,27 @@ class LabMigrationRunForm extends FormBase {
           '#type' => 'item',
           '#markup' => Link::fromTextAndUrl('Download Solution', Url::fromUri('internal:/lab-migration/download/solution/' . $form_state->getValue('solution_list')))->toString()
         ];
-     
+        
+        // if (in_array($lab_default_value, $convertedlabArray)) {
+        //   $lab_details = _lab_information($lab_default_value);
+        //   $book_name = str_replace(' ', '_', $lab_details->lab_title) . "_FreeEDA_Version.zip";
+        
+        //   // Build the download link
+        //   $url = Url::fromUri('internal:/lab_migration_uploads/' . $book_name);
+        //   $link = Link::fromTextAndUrl('Download Lab Solutions (FreeEDA Version)', $url)->toString();
+        
+        //   $form['selected_lab_freeeda'] = [
+        //     '#type' => 'item',
+        //     '#markup' => '<div id="ajax_selected_lab_freeeda">' . $link . '</div>',
+        //   ];
+        // }
+        // else {
+        //   $form['selected_lab_freeeda'] = [
+        //     '#type' => 'item',
+        //     '#markup' => '',
+        //   ];
+        // }
+        
  
         $solution_files_rows = [];
 
@@ -142,21 +162,33 @@ class LabMigrationRunForm extends FormBase {
           while ($solution_list_data = $solution_list_q->fetchObject()) {
             $ext = strtolower(pathinfo($solution_list_data->filename, PATHINFO_EXTENSION));
         
-            if ($ext === 'zip') {
+            if ($ext === 'zip' || $ext === 'pdf') {
               switch ($solution_list_data->filetype) {
-                case 'S': $solution_file_type = 'Source or Main file'; break;
-                case 'R': $solution_file_type = 'Result file'; break;
-                case 'X': $solution_file_type = 'xcos file'; break;
-                default:  $solution_file_type = 'Unknown'; break;
+                case 'S': 
+                  $solution_file_type = 'Source or Main file'; 
+                  break;
+                case 'R': 
+                  $solution_file_type = 'Result file'; 
+                  break;
+                case 'X': 
+                  $solution_file_type = 'xcos file'; 
+                  break;
+                default:  
+                  $solution_file_type = 'Unknown'; 
+                  break;
               }
-        
+            
               $items = [
-                Link::fromTextAndUrl($solution_list_data->filename, Url::fromUri('internal:/lab-migration/download/file/' . $solution_list_data->id))->toString(),
+                Link::fromTextAndUrl(
+                  $solution_list_data->filename,
+                  Url::fromUri('internal:/lab-migration/download/file/' . $solution_list_data->id)
+                )->toString(),
                 $solution_file_type,
               ];
-        
+            
               $solution_files_rows[] = $items;
             }
+            
           }
         }
         

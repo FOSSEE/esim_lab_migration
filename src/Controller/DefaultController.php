@@ -147,55 +147,57 @@ class DefaultController extends ControllerBase {
   // }
 
   
-public function lab_migration_solution_proposal_pending() {
-
-  $connection = Database::getConnection();
-  $pending_rows = [];
-
-  $query = $connection->select('lab_migration_proposal', 'lmp')
-    ->fields('lmp')
-    ->condition('solution_provider_uid', 0, '!=')
-    ->condition('solution_status', 1)
-    ->orderBy('id', 'DESC');
-
-  $results = $query->execute();
-
-  foreach ($results as $row) {
-    $user_link = Link::fromTextAndUrl(
-      $row->name,
-      Url::fromRoute('entity.user.canonical', ['user' => $row->uid])
-    )->toString();
-
-    $approve_link = Link::fromTextAndUrl(
-      'Approve',
-      Url::fromRoute('lab_migration.solution_proposal_approve', ['id' => $row->id])
-    )->toString();
-
-    $pending_rows[] = [
-      Markup::create($user_link),
-      $row->lab_title,
-      Markup::create($approve_link),
+  
+  public function lab_migration_solution_proposal_pending() {
+    $pending_rows = [];
+  
+    // Build query
+    $connection = Database::getConnection();
+    $query = $connection->select('lab_migration_proposal', 'lmp')
+      ->fields('lmp')
+      ->condition('solution_provider_uid', 0, '!=')
+      ->condition('solution_status', 1)
+      ->orderBy('id', 'DESC');
+  
+    $pending_q = $query->execute();
+  
+    foreach ($pending_q as $pending_data) {
+      $proposer_link = Link::fromTextAndUrl(
+        $pending_data->name,
+        Url::fromUri('internal:/user/' . $pending_data->uid)
+      )->toString();
+  
+      $approve_link = Link::fromTextAndUrl(
+        'Approve',
+        Url::fromUri('internal:/lab-migration/manage_proposal/solution_proposal_approve/' . $pending_data->id)
+      )->toString();
+  
+      $pending_rows[] = [
+        'data' => [
+          ['data' => ['#markup' => $proposer_link]],
+          ['data' => $pending_data->lab_title],
+          ['data' => ['#markup' => $approve_link]],
+        ],
+      ];
+    }
+  
+    // If no results
+    if (empty($pending_rows)) {
+      \Drupal::messenger()->addMessage(t('There are no pending solution proposals.'));
+      return [];
+    }
+  
+    // Render table
+    $build = [
+      '#type' => 'table',
+      '#header' => ['Proposer Name', 'Title of the Lab', 'Action'],
+      '#rows' => $pending_rows,
+      '#empty' => t('There are no pending solution proposals.'),
     ];
+  
+    return $build;
   }
-
-  if (empty($pending_rows)) {
-    \Drupal::messenger()->addStatus(t('There are no pending solution proposals.'));
-    return [];
-  }
-
-  $header = [
-    t('Proposer Name'),
-    t('Title of the Lab'),
-    t('Action'),
-  ];
-
-  return [
-    '#type' => 'table',
-    '#header' => $header,
-    '#rows' => $pending_rows,
-    '#empty' => t('No pending solution proposals found.'),
-  ];
-}
+  
 
   public function lab_migration_proposal_pending_solution() {
     /* get pending proposals to be approved */
