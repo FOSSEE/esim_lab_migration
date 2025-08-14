@@ -151,6 +151,47 @@ class LabMigrationRunForm extends FormBase {
         // }
         
  
+        // $solution_files_rows = [];
+
+        // $query = \Drupal::database()->select('lab_migration_solution_files', 's');
+        // $query->fields('s');
+        // $query->condition('solution_id', $form_state->getValue('solution_list'));
+        // $solution_list_q = $query->execute();
+        
+        // if ($solution_list_q) {
+        //   while ($solution_list_data = $solution_list_q->fetchObject()) {
+        //     $ext = strtolower(pathinfo($solution_list_data->filename, PATHINFO_EXTENSION));
+        
+        //     if ($ext === 'zip' || $ext === 'pdf') {
+        //       switch ($solution_list_data->filetype) {
+        //         case 'S': 
+        //           $solution_file_type = 'Source or Main file'; 
+        //           break;
+        //         case 'R': 
+        //           $solution_file_type = 'Result file'; 
+        //           break;
+        //         case 'X': 
+        //           $solution_file_type = 'xcos file'; 
+        //           break;
+        //         default:  
+        //           $solution_file_type = 'Unknown'; 
+        //           break;
+        //       }
+            
+        //       $items = [
+        //         Link::fromTextAndUrl(
+        //           $solution_list_data->filename,
+        //           Url::fromUri('internal:/lab-migration/download/file/' . $solution_list_data->id)
+        //         )->toString(),
+        //         $solution_file_type,
+        //       ];
+            
+        //       $solution_files_rows[] = $items;
+        //     }
+            
+        //   }
+        // }
+        
         $solution_files_rows = [];
 
         $query = \Drupal::database()->select('lab_migration_solution_files', 's');
@@ -160,41 +201,50 @@ class LabMigrationRunForm extends FormBase {
         
         if ($solution_list_q) {
           while ($solution_list_data = $solution_list_q->fetchObject()) {
-            $ext = strtolower(pathinfo($solution_list_data->filename, PATHINFO_EXTENSION));
         
-            if ($ext === 'zip' || $ext === 'pdf') {
+            // If it's the main solution file (NOT the PDF file from pdfpath)
+            if (empty($solution_list_data->pdfpath) || strtolower(pathinfo($solution_list_data->filename, PATHINFO_EXTENSION)) !== 'pdf') {
               switch ($solution_list_data->filetype) {
-                case 'S': 
-                  $solution_file_type = 'Source or Main file'; 
+                case 'S':
+                  $solution_file_type = 'Source or Main file';
                   break;
-                case 'R': 
-                  $solution_file_type = 'Result file'; 
+                case 'R':
+                  $solution_file_type = 'Result file';
                   break;
-                case 'X': 
-                  $solution_file_type = 'xcos file'; 
+                case 'X':
+                  $solution_file_type = 'xcos file';
                   break;
-                default:  
-                  $solution_file_type = 'Unknown'; 
+                default:
+                  $solution_file_type = 'Unknown';
                   break;
               }
-            
-              $items = [
+        
+              $solution_files_rows[] = [
                 Link::fromTextAndUrl(
                   $solution_list_data->filename,
                   Url::fromUri('internal:/lab-migration/download/file/' . $solution_list_data->id)
                 )->toString(),
                 $solution_file_type,
               ];
-            
-              $solution_files_rows[] = $items;
             }
-            
+        
+            // If there's a PDF path, show it only once
+            if (!empty($solution_list_data->pdfpath) && strlen($solution_list_data->pdfpath) >= 5) {
+              $pdfname = substr($solution_list_data->pdfpath, strrpos($solution_list_data->pdfpath, '/') + 1);
+              $solution_files_rows[] = [
+                Link::fromTextAndUrl(
+                  $pdfname,
+                  Url::fromUri('internal:/lab-migration/download/pdf/' . $solution_list_data->id)
+                )->toString(),
+                'PDF File',
+              ];
+            }
           }
         }
         
         $form['download_solution_wrapper']['solution_files'] = [
           '#type' => 'fieldset',
-          '#title' => t('List of solution ZIP files'),
+          '#title' => t('List of solution files'),
         ];
         
         $form['download_solution_wrapper']['solution_files']['table'] = [
