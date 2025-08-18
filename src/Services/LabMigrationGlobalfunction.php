@@ -99,11 +99,82 @@ public function _lm_list_of_cities()
     return $department;
   }
 
- public function lm_list_of_software_version()
+
+  function _lm_list_of_esim_version() {
+    $esim_version = [];
+  
+    $connection = \Drupal::database();
+    $query = $connection->select('esim_software_version', 'esv');
+    $query->fields('esv');
+    $query->orderBy('id', 'ASC');
+  
+    $version_list = $query->execute();
+    foreach ($version_list as $version_list_data) {
+      $esim_version[$version_list_data->esim_version] = $version_list_data->esim_version;
+    }
+  
+    return $esim_version;
+  }
+
+  function _list_of_lab_titles() {
+    $lab_titles = ['0' => 'Please select...'];
+  
+    $connection = \Drupal::database();
+    $query = $connection->select('lab_migration_proposal', 'lmp');
+    $query->fields('lmp');
+  
+    // Replacing db_or() with orConditionGroup()
+    $or = $query->orConditionGroup()
+      ->condition('approval_status', 1)
+      ->condition('approval_status', 3);
+  
+    $query->condition($or);
+    $query->orderBy('lab_title', 'ASC');
+  
+    $lab_titles_q = $query->execute();
+    foreach ($lab_titles_q as $lab_titles_data) {
+      $lab_titles[$lab_titles_data->id] = $lab_titles_data->lab_title . ' (Proposed by ' . $lab_titles_data->name . ')';
+    }
+  
+    return $lab_titles;
+  }
+
+
+
+function _list_of_dependency_files() {
+  $dependency_files = [];
+  $dependency_files_class = [];
+
+  $connection = \Drupal::database();
+  $query = $connection->select('lab_migration_dependency_files', 'ldf');
+  $query->fields('ldf');
+  $query->orderBy('filename', 'ASC');
+
+  $dependency_files_q = $query->execute();
+
+  foreach ($dependency_files_q as $dependency_files_data) {
+    $temp_caption = '';
+    if (!empty($dependency_files_data->caption)) {
+      $temp_caption = ' (' . $dependency_files_data->caption . ')';
+    }
+
+    $link = Link::fromTextAndUrl(
+      $dependency_files_data->filename . $temp_caption,
+      Url::fromUri('internal:/lab_migration/download/dependency/' . $dependency_files_data->id)
+    )->toString();
+
+    $dependency_files[$dependency_files_data->id] = $link;
+    $dependency_files_class[$dependency_files_data->id] = $dependency_files_data->proposal_id;
+  }
+
+  return [$dependency_files, $dependency_files_class];
+}
+
+ public function _lm_list_of_software_version()
   {
     $software_version = array();
     
-    $query = \Drupal::database()->select('esim_software_version ');
+    $query = \Drupal::database()->select('esim_software_version');
     $query->fields('esim_software_version');
     //$query->orderBy('id', 'DESC');
     $software_version_list = $query->execute();
@@ -161,7 +232,13 @@ public function lm_ucname($string)
   public function lab_migration_path()
   {
     return $_SERVER['DOCUMENT_ROOT'] . base_path() . 'esim_uploads/lab_migration_uploads/';
+    // var/www/html/ESIM-Drupal10-LM/esim_uploads/lab_migration_uploads
+
   }
+  function lab_migration_samplecode_path() {
+    return $_SERVER['DOCUMENT_ROOT'] . base_path() . 'lm_sample_code/';
+  }
+  
   public function _bulk_list_of_labs()
   {
     $lab_titles = array(

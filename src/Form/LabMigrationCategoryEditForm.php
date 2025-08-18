@@ -71,14 +71,13 @@ $response->send();
 
       '#title' => t('Name'),
     ];
-  
-$form['email_id'] = [
-  '#type' => 'item',
-  '#markup' => ($user = User::load($proposal_data->uid)) ? $user->getEmail() : t('User not found'),
-  '#attributes' => ['class' => ['form-control']],
-  '#title' => t('Email'),
-];
+    $form['email_id'] = [
+      '#type' => 'item',
+      '#markup' => User::load($proposal_data->uid)->getEmail(),
+      '#attributes' => array('class' => array('form-control')),
 
+      '#title' => t('Email'),
+    ];
     $form['contact_ph'] = [
       '#type' => 'item',
       '#markup' => $proposal_data->contact_ph,
@@ -182,4 +181,3 @@ $proposal_id = (int) $route_match->getParameter('id');
   }
 
 }
-?>
